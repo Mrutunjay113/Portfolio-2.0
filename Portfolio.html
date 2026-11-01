@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mrutunjay Yadav — MERN Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F2EE; --ink:#151513; --mute:#77756F; --line:#DAD8D1; --card:#EBE9E3;
+    --accent:oklch(0.64 0.19 38);
+    --sans:'Geist',ui-sans-serif,sans-serif; --mono:'Geist Mono',ui-monospace,monospace; --serif:'Instrument Serif',serif;
+    --pad:clamp(20px,4vw,56px);
+  }
+  [data-theme="dark"]{ --bg:#121211; --ink:#ECEAE4; --mute:#8A8880; --line:#2A2926; --card:#1B1A18; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.02em;text-transform:uppercase}
+  .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0}
+  .mute{color:var(--mute)}
+  .wrap{padding:0 var(--pad)}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);
+      background:color-mix(in oklab,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  nav .links{display:flex;gap:28px}
+  nav .links a{position:relative}
+  nav .links a::after{content:"";position:absolute;left:0;right:100%;bottom:-3px;height:1px;background:currentColor;transition:right .3s}
+  nav .links a:hover::after{right:0}
+  .navr{display:flex;align-items:center;gap:20px}
+  .theme{width:34px;height:18px;border:1px solid var(--ink);border-radius:20px;background:none;cursor:pointer;position:relative}
+  .theme::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--ink);transition:transform .3s}
+  [data-theme="dark"] .theme::after{transform:translateX(16px)}
+
+  /* HERO */
+  .hero{padding-top:clamp(60px,12vh,140px);padding-bottom:40px}
+  .status{display:inline-flex;align-items:center;gap:10px;padding:7px 14px 7px 12px;border:1px solid var(--line);border-radius:40px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);position:relative}
+  .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent);animation:ping 2s infinite}
+  @keyframes ping{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.8);opacity:0}}
+  .hero h1{font-weight:500;font-size:clamp(56px,12.4vw,230px);line-height:.86;letter-spacing:-.055em;margin:36px 0 0;white-space:nowrap}
+  .hero h1 .l{display:block;overflow:hidden}
+  .hero h1 .l span{display:inline-block;transform:translateY(105%);animation:rise 1.1s cubic-bezier(.2,.8,.1,1) forwards}
+  .hero h1 .l:nth-child(2) span{animation-delay:.08s}
+  .hero h1 .serif{font-weight:400;letter-spacing:-.02em}
+  @keyframes rise{to{transform:none}}
+  .hero-meta{margin-top:56px;padding-top:20px;border-top:1px solid var(--ink);row-gap:28px}
+  .hero-meta > div{grid-column:span 3}
+  .hero-meta .k{margin-bottom:8px}
+  .hero-meta .v{font-size:17px}
+  .lede{grid-column:span 6 !important;font-size:clamp(20px,1.8vw,26px)!important;line-height:1.3;letter-spacing:-.015em;max-width:30ch}
+
+  /* SECTIONS */
+  section.block{padding:clamp(80px,12vh,150px) 0 0}
+  .shead{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:16px;margin-bottom:56px}
+  .h2{font-size:clamp(36px,5vw,72px);font-weight:500;letter-spacing:-.045em;line-height:.95}
+
+  /* PROFILE */
+  .profile p{grid-column:4 / span 8;font-size:clamp(24px,2.7vw,40px);line-height:1.18;letter-spacing:-.028em;text-wrap:pretty}
+  .profile p .mute{transition:color .3s}
+  .facts{grid-column:4 / span 9;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px}
+  .fact{border-top:1px solid var(--line);padding-top:14px}
+  .fact b{display:block;font-weight:500;font-size:clamp(40px,4.4vw,64px);letter-spacing:-.05em;line-height:1;margin-bottom:10px}
+
+  /* EXPERIENCE */
+  .xp-left{grid-column:span 4}
+  .xp-left h3{font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1.05}
+  .track{margin-top:36px;position:relative;padding-left:22px}
+  .track::before{content:"";position:absolute;left:3px;top:6px;bottom:6px;width:1px;background:var(--line)}
+  .step{position:relative;margin-bottom:26px}
+  .step::before{content:"";position:absolute;left:-22px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--bg);border:1px solid var(--ink)}
+  .step.now::before{background:var(--accent);border-color:var(--accent)}
+  .step .t{font-size:17px;margin-top:2px}
+  .xp-right{grid-column:6 / span 7}
+  .duty{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line)}
+  .duty:last-child{border-bottom:1px solid var(--line)}
+  .duty p{font-size:17px;line-height:1.5;text-wrap:pretty}
+
+  /* PROJECTS */
+  .proj{border-top:1px solid var(--line);cursor:pointer}
+  .proj:last-child{border-bottom:1px solid var(--line)}
+  .prow{display:grid;grid-template-columns:60px 1fr auto 40px;align-items:center;gap:24px;padding:30px 0;transition:padding .4s cubic-bezier(.2,.8,.1,1)}
+  .proj:hover .prow{padding-left:14px}
+  .ptitle{font-size:clamp(26px,3.4vw,52px);font-weight:500;letter-spacing:-.04em;line-height:1}
+  .ptitle .serif{color:var(--mute)}
+  .pkind{text-align:right}
+  .plus{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;position:relative;transition:transform .4s,background .3s,border-color .3s}
+  .plus::before,.plus::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1px;background:var(--ink);transform:translate(-50%,-50%)}
+  .plus::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .proj:hover .plus{background:var(--ink);border-color:var(--ink)}
+  .proj:hover .plus::before,.proj:hover .plus::after{background:var(--bg)}
+  .proj.open .plus{transform:rotate(45deg)}
+  .pbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.2,.8,.1,1)}
+  .proj.open .pbody{grid-template-rows:1fr}
+  .pbody > div{overflow:hidden}
+  .pin{display:grid;grid-template-columns:60px 1fr 1fr;gap:24px;padding:0 0 44px}
+  .pin .sum{grid-column:2;font-size:22px;line-height:1.3;letter-spacing:-.02em;text-wrap:pretty}
+  .pin ul{grid-column:3;list-style:none}
+  .pin li{padding:12px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.5;color:var(--mute);display:grid;grid-template-columns:28px 1fr}
+  .pin li span{font-family:var(--mono);font-size:11px;color:var(--ink);padding-top:3px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:28px}
+  .tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.02em;padding:5px 10px;border:1px solid var(--line);border-radius:30px}
+
+  /* STACK */
+  .stack{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--ink)}
+  .scol{padding:18px 20px 28px 0;border-right:1px solid var(--line)}
+  .scol + .scol{padding-left:20px}
+  .scol:last-child{border-right:0}
+  .scol .mono{margin-bottom:28px;display:block}
+  .scol li{list-style:none;font-size:clamp(20px,1.8vw,26px);letter-spacing:-.025em;line-height:1.35;transition:color .2s, transform .3s;width:fit-content}
+  .scol li:hover{color:var(--accent);transform:translateX(4px)}
+
+  /* EDU */
+  .edu{display:grid;grid-template-columns:120px 1.4fr 1fr auto;gap:24px;align-items:baseline;padding:26px 0;border-top:1px solid var(--line)}
+  .edu:last-of-type{border-bottom:1px solid var(--line)}
+  .edu h4{font-size:30px;font-weight:500;letter-spacing:-.035em}
+  .edu .score{font-size:30px;letter-spacing:-.035em}
+  .side{display:grid;grid-template-columns:120px 1fr 1fr;gap:24px;margin-top:48px}
+  .side div p{font-size:20px;letter-spacing:-.02em;margin-top:8px}
+
+  /* CONTACT */
+  .contact{padding:clamp(100px,16vh,200px) 0 0}
+  .contact .k{margin-bottom:28px}
+  .email{display:inline-flex;align-items:baseline;gap:.25em;font-size:clamp(34px,7.6vw,140px);font-weight:500;letter-spacing:-.055em;line-height:1;cursor:pointer;background:none;border:0;color:inherit;font-family:inherit;text-align:left}
+  .email .at{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .email:hover .u{background-size:100% 2px}
+  .email .u{background:linear-gradient(currentColor,currentColor) left bottom/0% 2px no-repeat;transition:background-size .5s cubic-bezier(.2,.8,.1,1)}
+  .copied{display:inline-block;margin-left:14px;vertical-align:middle;opacity:0;transform:translateY(6px);transition:.3s}
+  .copied.show{opacity:1;transform:none}
+  .clinks{display:grid;grid-template-columns:repeat(3,1fr);margin-top:72px;border-top:1px solid var(--ink)}
+  .clinks a{display:flex;justify-content:space-between;align-items:center;padding:22px 20px 22px 0;border-right:1px solid var(--line);font-size:19px;letter-spacing:-.02em}
+  .clinks a + a{padding-left:20px}
+  .clinks a:last-child{border-right:0}
+  .clinks .arr{display:inline-block;transition:transform .3s}
+  .clinks a:hover .arr{transform:translate(4px,-4px);color:var(--accent)}
+  footer{display:flex;justify-content:space-between;padding:56px 0 28px;margin-top:40px;border-top:1px solid var(--line)}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.8,.1,1),transform .9s cubic-bezier(.2,.8,.1,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    nav .links{display:none}
+    .hero h1{white-space:normal}
+    .hero-meta > div{grid-column:span 6}
+    .lede{grid-column:span 12 !important}
+    .profile p,.facts{grid-column:1 / -1}
+    .facts{grid-template-columns:1fr 1fr 1fr;gap:14px}
+    .xp-left,.xp-right{grid-column:1 / -1}
+    .xp-right{margin-top:48px}
+    .duty{grid-template-columns:1fr;gap:6px}
+    .prow{grid-template-columns:36px 1fr 40px}
+    .pkind{display:none}
+    .pin{grid-template-columns:1fr}
+    .pin .sum,.pin ul{grid-column:1}
+    .stack{grid-template-columns:1fr 1fr}
+    .scol{border-right:0;border-bottom:1px solid var(--line);padding-left:0!important}
+    .edu{grid-template-columns:1fr auto}
+    .edu .yr,.edu .inst{grid-column:1 / -1}
+    .side{grid-template-columns:1fr 1fr}
+    .side > :first-child{display:none}
+    .clinks{grid-template-columns:1fr}
+    .clinks a{border-right:0;border-bottom:1px solid var(--line);padding-left:0!important}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="mono">MY<span class="mute">/</span>Portfolio</a>
+  <div class="links mono">
+    <a href="#profile">Profile</a><a href="#experience">Experience</a><a href="#work">Work</a><a href="#stack">Stack</a><a href="#contact">Contact</a>
+  </div>
+  <div class="navr">
+    <span class="mono"><span class="mute">Mumbai</span> <span id="clock">--:--</span></span>
+    <button class="theme" id="theme" aria-label="Toggle theme"></button>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+
+  <!-- HERO -->
+  <header class="hero" data-screen-label="01 Hero">
+    <span class="status mono"><span class="dot"></span>Open to new roles &amp; freelance</span>
+    <h1>
+      <span class="l"><span>Mrutunjay</span></span>
+      <span class="l"><span>Yadav<span class="serif">—dev</span></span></span>
+    </h1>
+    <div class="grid hero-meta">
+      <div class="lede rv">I build fast, data-heavy web apps <span class="serif">end to end</span>, from the schema to the shipped UI.</div>
+      <div class="rv"><div class="k mono mute">Role</div><div class="v">MERN Stack Developer<br>at FilamentAi</div></div>
+      <div class="rv"><div class="k mono mute">Based in</div><div class="v">Mumbai, India<br><span class="mute">IST · UTC+5:30</span></div></div>
+    </div>
+  </header>
+
+  <!-- PROFILE -->
+  <section class="block profile" id="profile" data-screen-label="02 Profile">
+    <div class="shead"><span class="mono">(01) Profile</span><span class="mono mute">About</span></div>
+    <div class="grid">
+      <p class="rv">I'm a MERN stack developer with 3+ years of experience in <span class="serif">Next.js, React, Node, TypeScript</span> and MongoDB. <span class="mute">I build responsive, fast interfaces and secure REST APIs, and I care most about data modeling, auth and RBAC, and server-state. I own features from the first commit to the production release, and I measure success in page load, API latency and data consistency.</span></p>
+      <div class="facts rv">
+        <div class="fact"><b>3+</b><span class="mono mute">Years shipping</span></div>
+        <div class="fact"><b>3</b><span class="mono mute">Full-stack platforms</span></div>
+        <div class="fact"><b>8.19</b><span class="mono mute">MCA CGPI, 2025</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="block" id="experience" data-screen-label="03 Experience">
+    <div class="shead"><span class="mono">(02) Experience</span><span class="mono mute">2023 — Now</span></div>
+    <div class="grid">
+      <div class="xp-left rv">
+        <span class="mono mute">FilamentAi Pvt. Ltd. · Mumbai</span>
+        <h3 style="margin-top:12px">Computer-vision analytics for <span class="serif">safer workplaces</span></h3>
+        <div class="track">
+          <div class="step"><span class="mono mute">Aug 2023</span><div class="t">Frontend Developer</div></div>
+          <div class="step"><span class="mono mute">Nov 2023</span><div class="t">Moved to MERN Stack Developer</div></div>
+          <div class="step now"><span class="mono" style="color:var(--accent)">Present</span><div class="t">End-to-end feature owner</div></div>
+        </div>
+      </div>
+      <div class="xp-right">
+        <div class="duty rv"><span class="mono mute">APIs</span><p>I designed, documented and shipped secure REST APIs for auth, user management and reporting. They all follow the same rules for validation, error handling and versioned routes.</p></div>
+        <div class="duty rv"><span class="mono mute">Data</span><p>I designed the MongoDB schemas, compound indexes and aggregation pipelines behind the analytics apps.</p></div>
+        <div class="duty rv"><span class="mono mute">Performance</span><p>I made the apps faster with Next.js Server Components, code splitting, lazy loading and better rendering strategies.</p></div>
+        <div class="duty rv"><span class="mono mute">Auth</span><p>I built session management and role-based access control (RBAC) with Better Auth.</p></div>
+        <div class="duty rv"><span class="mono mute">UI System</span><p>I built a library of reusable, modular components in React and Tailwind CSS that the product modules share.</p></div>
+        <div class="duty rv"><span class="mono mute">CV / AI</span><p>I worked with the AI team to bring computer-vision events into the product: PPE compliance, fire and smoke detection, safety violations and attendance.</p></div>
+        <div class="duty rv"><span class="mono mute">Ops</span><p>I handle environment config and production deployments on Vercel.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="block" id="work" data-screen-label="04 Work">
+    <div class="shead"><span class="mono">(03) Selected Work</span><span class="mono mute">Click a project to expand</span></div>
+
+    <div class="proj open rv">
+      <div class="prow"><span class="mono mute">01</span><span class="ptitle">Attendance <span class="serif">&amp;</span> Productivity</span><span class="mono mute pkind">Analytics · Full-stack</span><span class="plus"></span></div>
+      <div class="pbody"><div><div class="pin">
+        <div class="sum">A workplace analytics platform. It turns camera-based desk-occupancy timelines into attendance, productive hours, breaks, overtime and department-level reports.
+          <div class="tags"><span class="tag">Next.js</span><span class="tag">React</span><span class="tag">MongoDB</span><span class="tag">Mongoose</span><span class="tag">NextAuth.js</span><span class="tag">TanStack Query</span><span class="tag">Tailwind</span><span class="tag">Zod</span></div>
+        </div>
+        <ul>
+          <li><span>a</span>An admin dashboard with interactive charts, trend views and filters for date range and department, so managers can compare teams over time.</li>
+          <li><span>b</span>TanStack Query handles caching, and paths revalidate after each mutation, so the dashboard always matches the database.</li>
+          <li><span>c</span>Fast queries using lean reads, field projections, compound indexes, aggregation pipelines and parallel database calls.</li>
+        </ul>
+      </div></div></div>
+    </div>
+
+    <div class="proj rv">
+      <div class="prow"><span class="mono mute">02</span><span class="ptitle">Campus Occupancy <span class="serif">&amp;</span> Identity</span><span class="mono mute pkind">Realtime · Full-stack</span><span class="plus"></span></div>
+      <div class="pbody"><div><div class="pin">
+        <div class="sum">Real-time occupancy tracking across buildings, floors and locations. It covers assembly-point headcounts, identity enrollment and face-event review.
+          <div class="tags"><span class="tag">Next.js</span><span class="tag">MongoDB</span><span class="tag">Better Auth</span><span class="tag">Socket.IO</span><span class="tag">TanStack Query</span><span class="tag">Recharts</span><span class="tag">Zod</span><span class="tag">Tailwind</span></div>
+        </div>
+        <ul>
+          <li><span>a</span>Invite-based enrollment with photo uploads, approval steps and an audit trail for every review decision.</li>
+          <li><span>b</span>Live updates over Socket.IO, falling back to Server-Sent Events and REST snapshots when needed.</li>
+          <li><span>c</span>REST APIs built as Next.js Route Handlers for occupancy, spaces, identity, attendance and visitors, connected to external face-recognition services.</li>
+          <li><span>d</span>Daily pre-aggregations, compound indexes and parallel queries keep historical reports fast.</li>
+        </ul>
+      </div></div></div>
+    </div>
+
+    <div class="proj rv">
+      <div class="prow"><span class="mono mute">03</span><span class="ptitle">Digital Marketplace <span class="serif">self-driven</span></span><span class="mono mute pkind">Commerce · Side project</span><span class="plus"></span></div>
+      <div class="pbody"><div><div class="pin">
+        <div class="sum">An end-to-end marketplace for digital products. Sellers list products, buyers pay and then get secure download links that expire.
+          <div class="tags"><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">tRPC</span><span class="tag">Stripe</span><span class="tag">Payload CMS</span><span class="tag">Shadcn UI</span><span class="tag">MongoDB</span></div>
+        </div>
+        <ul>
+          <li><span>a</span>Stripe checkout where webhooks drive the order status. Download endpoints use signed URLs so only paying customers get the files.</li>
+          <li><span>b</span>Payload CMS is the headless admin, and its typed tRPC procedures keep the frontend type-safe end to end.</li>
+          <li><span>c</span>Admin dashboards show revenue, top-selling products and download counts.</li>
+        </ul>
+      </div></div></div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section class="block" id="stack" data-screen-label="05 Stack">
+    <div class="shead"><span class="mono">(04) Stack</span><span class="mono mute">Tools I use daily</span></div>
+    <div class="stack rv">
+      <div class="scol"><span class="mono mute">Frontend</span><ul><li>Next.js</li><li>React.js</li><li>Tailwind CSS</li><li>HTML5</li><li>CSS3</li></ul></div>
+      <div class="scol"><span class="mono mute">Backend</span><ul><li>Node.js</li><li>Express.js</li></ul></div>
+      <div class="scol"><span class="mono mute">Database</span><ul><li>MongoDB</li><li>MySQL</li></ul></div>
+      <div class="scol"><span class="mono mute">Libraries</span><ul><li>TanStack Query</li><li>TanStack Form</li><li>Better Auth</li></ul></div>
+      <div class="scol"><span class="mono mute">Languages</span><ul><li>JavaScript</li><li>TypeScript</li><li>Java</li></ul></div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="block" id="education" data-screen-label="06 Education">
+    <div class="shead"><span class="mono">(05) Education</span><span class="mono mute">Academic</span></div>
+    <div class="edu rv"><span class="mono mute yr">2025</span><h4>MCA</h4><span class="mute inst">Thakur Institute of Management Studies, Career Development &amp; Research</span><span class="score">8.19 <span class="mono mute">CGPI</span></span></div>
+    <div class="edu rv"><span class="mono mute yr">Undergrad</span><h4>BSc <span class="serif">Computer Science</span></h4><span class="mute inst">M.V.L.U</span><span class="score">8.5 <span class="mono mute">CGPA</span></span></div>
+    <div class="side rv">
+      <span></span>
+      <div><span class="mono mute">Speaks</span><p>English, Hindi</p></div>
+      <div><span class="mono mute">Off-screen</span><p>Cricket, <span class="serif">and</span> games</p></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact" data-screen-label="07 Contact">
+    <div class="k mono mute">(06) Have a project in mind? Let's talk.</div>
+    <button class="email" id="email" data-email="mrutunjay765@gmail.com">
+      <span class="u">mrutunjay765</span><span class="at">@</span><span class="u">gmail.com</span>
+    </button>
+    <span class="copied mono" id="copied">Copied to clipboard ✓</span>
+
+    <div class="clinks">
+      <a href="https://github.com/Mrutunjay113" target="_blank" rel="noopener">GitHub <span class="mono mute">/Mrutunjay113 <span class="arr">↗</span></span></a>
+      <a href="https://linkedin.com/in/mrutunjay-yadav-48a856168" target="_blank" rel="noopener">LinkedIn <span class="mono mute">/mrutunjay-yadav <span class="arr">↗</span></span></a>
+      <a href="tel:+918286474981">Phone <span class="mono mute">+91 82864 74981 <span class="arr">↗</span></span></a>
+    </div>
+
+    <footer class="mono mute">
+      <span>© 2026 Mrutunjay Yadav</span>
+      <span>Vasai, Mumbai</span>
+      <a href="#top">Back to top ↑</a>
+    </footer>
+  </section>
+</main>
+
+<script>
+  // clock (IST)
+  const clk=document.getElementById('clock');
+  const tick=()=>clk.textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'});
+  tick(); setInterval(tick,15000);
+
+  // theme
+  const root=document.documentElement, saved=localStorage.getItem('my-theme');
+  if(saved) root.dataset.theme=saved;
+  document.getElementById('theme').onclick=()=>{
+    root.dataset.theme = root.dataset.theme==='dark'?'light':'dark';
+    localStorage.setItem('my-theme',root.dataset.theme);
+  };
+
+  // projects accordion
+  document.querySelectorAll('.proj').forEach(p=>p.querySelector('.prow').addEventListener('click',()=>p.classList.toggle('open')));
+
+  // copy email
+  const em=document.getElementById('email'), cp=document.getElementById('copied');
+  em.onclick=()=>{
+    navigator.clipboard?.writeText(em.dataset.email).catch(()=>{});
+    cp.classList.add('show'); clearTimeout(em._t); em._t=setTimeout(()=>cp.classList.remove('show'),1800);
+  };
+
+  // reveal
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*60+'ms';io.observe(el)});
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

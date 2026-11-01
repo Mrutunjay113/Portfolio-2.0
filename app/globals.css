@@ -1,26 +1,220 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dark mode is driven by <html data-theme="dark"> (see ThemeToggle + the head script in layout.tsx). */
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+/* The original design switches to the mobile layout at 900px. */
+@theme {
+  --breakpoint-md: 900px;
 }
 
 @theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-heading: var(--font-sans);
+
+  /* Portfolio tokens */
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+
+  /* shadcn semantic tokens (mapped onto the portfolio palette) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-status-ping: status-ping 2s infinite;
+  --ease-expo-out: cubic-bezier(0.2, 0.8, 0.1, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --bg: #f3f2ee;
+  --ink: #151513;
+  --mute: #77756f;
+  --line: #dad8d1;
+  --card: #ebe9e3;
+  --signal: oklch(0.64 0.19 38);
+  --pad: clamp(20px, 4vw, 56px);
+
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card-foreground: var(--ink);
+  --popover: var(--bg);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--bg);
+  --secondary: var(--card);
+  --secondary-foreground: var(--ink);
+  --muted: var(--card);
+  --muted-foreground: var(--mute);
+  --accent: var(--card);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--signal);
+  --radius: 0.625rem;
+}
+
+[data-theme="dark"] {
+  --bg: #121211;
+  --ink: #eceae4;
+  --mute: #8a8880;
+  --line: #2a2926;
+  --card: #1b1a18;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    /* Lenis owns smooth scrolling; native smooth-scroll would fight it. */
+    scroll-behavior: auto;
+  }
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-x: clip;
+    transition:
+      background-color 0.4s,
+      color 0.4s;
+  }
+  ::selection {
+    background: var(--signal);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Typographic helpers from the original design */
+@utility mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+@utility serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Underline that grows in from the left on hover / focus of the element or its .group parent */
+@utility ulink {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -3px;
+    height: 1px;
+    background: var(--signal);
+    transition: right 0.3s;
+  }
+  &:hover::after,
+  :where(.group):is(:hover, :focus-visible) &::after {
+    right: 0;
+  }
+}
+
+@keyframes status-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/*
+ * Pre-hydration hidden states for GSAP-driven entrances.
+ * - `html.js` is added by the inline head script, so no-JS visitors see everything.
+ * - Everyone gets an opacity entrance (reduced-motion visitors get a fade only).
+ * - Movement (translate / scale / masked headline) is only hidden for no-preference,
+ *   so reduced-motion visitors never see anything travel.
+ * GSAP (see components/motion/page-animations.tsx) tweens from these same values.
+ */
+html.js [data-reveal],
+html.js [data-hero-status],
+html.js [data-hero-meta],
+html.js [data-head-text] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal],
+  html.js [data-hero-status],
+  html.js [data-hero-meta] {
+    transform: translateY(24px);
+  }
+  /* Hero name lines are animated only via GSAP (no CSS pre-hide) so a cleared
+     inline transform can never fall back to a translateY that clips the text. */
+  html.js [data-head-text] {
+    transform: translateY(14px);
+  }
+  html.js [data-head-line] {
+    transform: scaleX(0);
+  }
+  /* Hatch starts clipped to the top-right corner; GSAP expands it downward. */
+  html.js [data-hero-hatch] {
+    clip-path: circle(0% at 100% 0%);
+  }
+}
+
+/* Diagonal hatch behind the hero (theme-aware via --ink).
+   Soft-masked so it reads strongest on the right. Bottom cloudy dissolve
+   is handled by overlay layers in hero-hatch.tsx (more reliable than mask-composite). */
+@utility hero-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--ink) 10%, transparent) 0,
+    color-mix(in oklab, var(--ink) 10%, transparent) 1px,
+    transparent 1px,
+    transparent 11px
+  );
+  -webkit-mask-image: linear-gradient(100deg, transparent 30%, #000 100%);
+  mask-image: linear-gradient(100deg, transparent 30%, #000 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-status-ping {
+    animation: none;
+  }
 }
