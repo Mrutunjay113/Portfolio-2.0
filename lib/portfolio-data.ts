@@ -27,7 +27,7 @@ export interface NavLink {
 export const navLinks: NavLink[] = [
   { label: "Profile", href: "#profile" },
   { label: "Experience", href: "#experience" },
-  { label: "Work", href: "#work" },
+  { label: "Work", href: "/work" },
   { label: "Stack", href: "#stack" },
   { label: "Contact", href: "#contact" },
 ];
@@ -125,14 +125,76 @@ export const experience = {
   ],
 } as const;
 
+export type ProjectType = "client" | "product" | "side";
+
+export const projectTypeLabels: Record<"all" | ProjectType, string> = {
+  all: "All",
+  client: "Client",
+  product: "Product",
+  side: "Side project",
+};
+
 export interface Project {
   id: string;
   index: string;
   title: { lead: string; serif: string; tail?: string };
   kind: string;
+  year: number;
+  type: ProjectType;
+  role: string;
   summary: string;
   tags: string[];
   points: string[];
+  live?: string;
+  code?: string;
+  /**
+   * Cover shown on index hover, grid cards, and the case hero.
+   * Local: `/work/attendance.jpg` in `public/work/`. Remote: full https URL.
+   */
+  image?: string;
+  /** Extra case-study shots: [wide, detail]. Same URL rules as `image`. */
+  images?: string[];
+  wide?: boolean;
+  featured?: boolean;
+}
+
+export const workPage = {
+  lede: "Everything I've built, from client analytics platforms to products I made on my own.",
+  ctaNote: "Got something you'd like built?",
+} as const;
+
+export function padIndex(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+export function displaySummary(summary: string) {
+  const text = summary.replace(/^Placeholder:\s*/i, "");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function projectCategory(project: Project) {
+  return project.kind.split("·")[0]?.trim() ?? project.kind;
+}
+
+export function projectEngagement(type: ProjectType) {
+  if (type === "client") return "Professional";
+  return projectTypeLabels[type];
+}
+
+export function projectDisplayName(project: Project) {
+  return [project.title.lead, project.title.serif, project.title.tail]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ");
+}
+
+export function projectCrumb(project: Project) {
+  return `${project.title.lead} ${projectCategory(project)}`.toUpperCase();
+}
+
+export function projectRoleLabel(project: Project) {
+  if (project.role === "Full-stack") return "Full-stack Developer";
+  return project.role;
 }
 
 export const projects: Project[] = [
@@ -141,6 +203,13 @@ export const projects: Project[] = [
     index: "01",
     title: { lead: "Attendance", serif: "&", tail: "Productivity" },
     kind: "Analytics · Full-stack",
+    year: 2025,
+    type: "client",
+    role: "Full-stack",
+    wide: true,
+    featured: true,
+    image: "",
+    images: [],
     summary:
       "A workplace analytics platform. It turns camera-based desk-occupancy timelines into attendance, productive hours, breaks, overtime and department-level reports.",
     tags: [
@@ -164,6 +233,12 @@ export const projects: Project[] = [
     index: "02",
     title: { lead: "Campus Occupancy", serif: "&", tail: "Identity" },
     kind: "Realtime · Full-stack",
+    year: 2025,
+    type: "client",
+    role: "Full-stack",
+    featured: true,
+    image: "",
+    images: [],
     summary:
       "Real-time occupancy tracking across buildings, floors and locations. It covers assembly-point headcounts, identity enrollment and face-event review.",
     tags: [
@@ -186,8 +261,15 @@ export const projects: Project[] = [
   {
     id: "digital-marketplace",
     index: "03",
-    title: { lead: "Digital Marketplace", serif: "self-driven" },
+    title: { lead: "Digital", serif: "Marketplace" },
     kind: "Commerce · Side project",
+    year: 2024,
+    type: "side",
+    role: "Solo build",
+    featured: true,
+    code: "https://github.com/Mrutunjay113",
+    image: "",
+    images: [],
     summary:
       "An end-to-end marketplace for digital products. Sellers list products, buyers pay and then get secure download links that expire.",
     tags: [
@@ -205,7 +287,147 @@ export const projects: Project[] = [
       "Admin dashboards show revenue, top-selling products and download counts.",
     ],
   },
+  {
+    id: "ppe-compliance-console",
+    index: "04",
+    title: { lead: "PPE Compliance", serif: "Console" },
+    kind: "Client · Frontend lead",
+    year: 2024,
+    type: "client",
+    role: "Frontend lead",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: a review console for computer-vision PPE violations, with evidence snapshots and shift-wise compliance scores.",
+    tags: ["Next.js", "Express.js", "MongoDB", "Tailwind CSS"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "fire-smoke-alerts",
+    index: "05",
+    title: { lead: "Fire & Smoke", serif: "Alerts" },
+    kind: "Client · Full-stack",
+    year: 2024,
+    type: "client",
+    role: "Full-stack",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: a real-time incident feed for fire and smoke detection events, with acknowledgement and escalation flows.",
+    tags: ["React", "Node.js", "Socket.IO", "MongoDB"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "visitor-management",
+    index: "06",
+    title: { lead: "Visitor", serif: "Management" },
+    kind: "Client · Full-stack",
+    year: 2024,
+    type: "client",
+    role: "Full-stack",
+    wide: true,
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: visitor pre-registration, QR check-in and host notifications for corporate campuses.",
+    tags: ["Next.js", "MongoDB", "Zod", "TanStack Form"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "auth-starter-kit",
+    index: "07",
+    title: { lead: "Auth", serif: "Starter Kit" },
+    kind: "Product · Solo build",
+    year: 2025,
+    type: "product",
+    role: "Solo build",
+    code: "https://github.com/Mrutunjay113",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: a reusable Next.js starter with Better Auth, RBAC, sessions and protected route patterns.",
+    tags: ["Next.js", "Better Auth", "TypeScript", "MongoDB"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "realtime-chat",
+    index: "08",
+    title: { lead: "Realtime", serif: "Chat" },
+    kind: "Side project · Solo build",
+    year: 2023,
+    type: "side",
+    role: "Solo build",
+    code: "https://github.com/Mrutunjay113",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: a one-to-one and group chat app with presence, typing indicators and read receipts.",
+    tags: ["React", "Express.js", "Socket.IO", "MongoDB"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "task-board",
+    index: "09",
+    title: { lead: "Task", serif: "Board" },
+    kind: "Side project · Solo build",
+    year: 2023,
+    type: "side",
+    role: "Solo build",
+    code: "https://github.com/Mrutunjay113",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: a Kanban board with drag-and-drop, labels and optimistic updates.",
+    tags: ["React", "Node.js", "MySQL", "Tailwind CSS"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
+  {
+    id: "this-portfolio",
+    index: "10",
+    title: { lead: "This", serif: "Portfolio" },
+    kind: "Product · Design + build",
+    year: 2026,
+    type: "product",
+    role: "Design + build",
+    code: "https://github.com/Mrutunjay113",
+    image: "",
+    images: [],
+    summary:
+      "Placeholder: the site you're on, designed and built as a type-led, minimal portfolio.",
+    tags: ["HTML", "CSS", "JavaScript"],
+    points: [
+      "Replace with your key contribution.",
+      "Replace with a measurable outcome.",
+      "Replace with a technical highlight.",
+    ],
+  },
 ];
+
+export const featuredProjects = projects.filter((project) => project.featured);
 
 export const stack = [
   {

@@ -23,42 +23,44 @@ export function PageAnimations() {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap
-          .timeline({ defaults: { ease: EXPO_OUT } })
-          .fromTo(
-            "[data-hero-hatch]",
-            { clipPath: "circle(0% at 100% 0%)" },
-            {
-              clipPath: "circle(160% at 100% 0%)",
-              duration: 1.6,
-              ease: "power2.out",
-            },
-            0,
-          )
-          .fromTo(
-            "[data-hero-status]",
-            { opacity: 0, y: 16 },
-            { opacity: 1, y: 0, duration: 0.9 },
-            0.15,
-          )
-          .fromTo(
-            "[data-hero-line]",
-            { yPercent: 105 },
-            {
-              yPercent: 0,
-              duration: 1.2,
-              stagger: 0.09,
-              // Keep the final transform inline — do NOT clearProps. Clearing
-              // let any leftover CSS translateY(105%) snap the name back off-screen.
-            },
-            0.2,
-          )
-          .fromTo(
-            "[data-hero-meta]",
-            { opacity: 0, y: 18 },
-            { opacity: 1, y: 0, duration: 0.9, stagger: 0.07 },
-            0.7,
-          );
+        if (document.querySelector("[data-hero-status]")) {
+          gsap
+            .timeline({ defaults: { ease: EXPO_OUT } })
+            .fromTo(
+              "[data-hero-hatch]",
+              { clipPath: "circle(0% at 100% 0%)" },
+              {
+                clipPath: "circle(160% at 100% 0%)",
+                duration: 1.6,
+                ease: "power2.out",
+              },
+              0,
+            )
+            .fromTo(
+              "[data-hero-status]",
+              { opacity: 0, y: 16 },
+              { opacity: 1, y: 0, duration: 0.9 },
+              0.15,
+            )
+            .fromTo(
+              "[data-hero-line]",
+              { yPercent: 105 },
+              {
+                yPercent: 0,
+                duration: 1.2,
+                stagger: 0.09,
+                // Keep the final transform inline — do NOT clearProps. Clearing
+                // let any leftover CSS translateY(105%) snap the name back off-screen.
+              },
+              0.2,
+            )
+            .fromTo(
+              "[data-hero-meta]",
+              { opacity: 0, y: 18 },
+              { opacity: 1, y: 0, duration: 0.9, stagger: 0.07 },
+              0.7,
+            );
+        }
 
         ScrollTrigger.batch("[data-section-head]", {
           start: "top 92%",
@@ -104,15 +106,20 @@ export function PageAnimations() {
       });
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
-        gsap.set("[data-hero-hatch]", { clearProps: "clipPath" });
-        gsap.set("[data-hero-line]", { clearProps: "transform" });
-
-        gsap.to("[data-hero-status], [data-hero-meta]", {
-          opacity: 1,
-          duration: 0.6,
-          ease: "power1.out",
-          stagger: 0.04,
-        });
+        if (document.querySelector("[data-hero-hatch]")) {
+          gsap.set("[data-hero-hatch]", { clearProps: "clipPath" });
+        }
+        if (document.querySelector("[data-hero-line]")) {
+          gsap.set("[data-hero-line]", { clearProps: "transform" });
+        }
+        if (document.querySelector("[data-hero-status], [data-hero-meta]")) {
+          gsap.to("[data-hero-status], [data-hero-meta]", {
+            opacity: 1,
+            duration: 0.6,
+            ease: "power1.out",
+            stagger: 0.04,
+          });
+        }
 
         ScrollTrigger.batch(
           "[data-section-head] [data-head-text], [data-reveal]",

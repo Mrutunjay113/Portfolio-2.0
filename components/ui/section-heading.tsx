@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
+
 interface SectionHeadingProps {
   index: string;
   title: string;
-  aside: string;
+  aside: ReactNode;
 }
 
 /** Editorial section header: hairline rule, "(01) Title" on the left, quiet note on the right. */

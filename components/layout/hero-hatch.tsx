@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 /**
  * Full-viewport-width diagonal hatch behind the sticky nav + hero.
  * Breaks out of the centered max-width shell via w-screen + centered translate.
@@ -6,6 +10,9 @@
  * Animated via [data-hero-hatch] in page-animations.tsx.
  */
 export function HeroHatch() {
+  const pathname = usePathname();
+  if (pathname !== "/") return null;
+
   return (
     <div
       aria-hidden

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { gsap } from "gsap";
@@ -26,10 +27,19 @@ const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
  * which is intentional. Rendered once from the root layout; fully torn down on unmount.
  */
 export function SmoothScroll() {
+  const pathname = usePathname();
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathRef = useRef(pathname);
+
+  useEffect(() => {
+    pathRef.current = pathname;
+  }, [pathname]);
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({ autoRaf: false });
+    lenisRef.current = lenis;
 
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
@@ -37,6 +47,12 @@ export function SmoothScroll() {
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
+
+    const onLock = (event: Event) => {
+      if ((event as CustomEvent<boolean>).detail) lenis.stop();
+      else lenis.start();
+    };
+    window.addEventListener("portfolio:scroll-lock", onLock);
 
     const onClick = (event: MouseEvent) => {
       if (
@@ -49,10 +65,17 @@ export function SmoothScroll() {
       ) {
         return;
       }
-      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
       if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
 
-      const hash = link.getAttribute("href") ?? "";
+      const raw = link.getAttribute("href") ?? "";
+      const hash = raw.startsWith("#")
+        ? raw
+        : raw.startsWith("/#") && pathRef.current === "/"
+          ? raw.slice(1)
+          : "";
+      if (!hash) return;
+
       const id = decodeURIComponent(hash.slice(1));
       // "#top" / "#" scroll to the very top (the sticky nav sits above <main id="top">).
       const target: HTMLElement | number | null =
@@ -66,12 +89,24 @@ export function SmoothScroll() {
 
     return () => {
       document.removeEventListener("click", onClick);
+      window.removeEventListener("portfolio:scroll-lock", onLock);
       gsap.ticker.remove(raf);
-      gsap.ticker.lagSmoothing(500, 33); // restore GSAP defaults
+      gsap.ticker.lagSmoothing(500, 33);
       lenis.off("scroll", onScroll);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const id = decodeURIComponent(hash.slice(1));
+    const el = document.getElementById(id);
+    if (el) lenis.scrollTo(el, { immediate: true });
+  }, [pathname]);
 
   return null;
 }
