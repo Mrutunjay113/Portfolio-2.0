@@ -28,7 +28,7 @@ import { ProjectTitle, TypeBadge } from "./type-badge";
 type ViewMode = "index" | "grid";
 type Filter = "all" | ProjectType;
 
-const FILTERS: Filter[] = ["all", "client", "product", "side"];
+const FILTERS: Filter[] = ["all", "product", "client", "side"];
 const VIEW_KEY = "my-work-view";
 
 function countFor(filter: Filter) {

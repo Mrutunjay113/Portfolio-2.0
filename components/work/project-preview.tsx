@@ -202,7 +202,7 @@ export function MediaSlot({
           fill
           unoptimized
           sizes="(max-width: 900px) 100vw, 900px"
-          className="object-cover"
+          className="object-contain"
         />
       </div>
     );
