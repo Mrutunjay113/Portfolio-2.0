@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,30 @@ import { SiteClock } from "./site-clock";
 import { ThemeToggle } from "./theme-toggle";
 
 const SCROLL_THRESHOLD = 16;
+
+function BrandLogo() {
+  return (
+    <>
+      <Image
+        src="/nav-logo-dark.png"
+        alt="MY Portfolio"
+        width={54}
+        height={36}
+        priority
+        className="h-9 w-auto dark:hidden"
+      />
+      <Image
+        src="/nav-logo.png"
+        alt=""
+        width={54}
+        height={36}
+        priority
+        aria-hidden
+        className="hidden h-9 w-auto dark:block"
+      />
+    </>
+  );
+}
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,12 +60,12 @@ export function SiteNav() {
       )}
     >
       {isHome ? (
-        <a href="#top" className="mono">
-          MY<span className="text-mute">/</span>Portfolio
+        <a href="#top" aria-label="MY Portfolio home">
+          <BrandLogo />
         </a>
       ) : (
-        <Link href="/" className="mono">
-          MY<span className="text-mute">/</span>Portfolio
+        <Link href="/" aria-label="MY Portfolio home">
+          <BrandLogo />
         </Link>
       )}
 
